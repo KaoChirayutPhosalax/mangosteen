@@ -15,9 +15,8 @@ class Mangosteen extends Migration
     {
         Schema::create('mangosteen', function (Blueprint $table) {
             $table->increments('id'); //รหัสไซส์มังคุด
-            $table->string('mang_size'); //ชื่อไซส์มังคุด
-            $table->string('mang_attribute'); //ลักษณะมังคุด
-            $table->string('mang_status');//สถานะ
+            $table->string('name'); //ชื่อไซส์มังคุด
+            $table->bigInteger('amount');//สถานะ
             // $table->foreign('typebooks_id')->references('id')->on('typebooks');
 
 

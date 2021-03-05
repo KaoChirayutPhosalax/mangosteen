@@ -8,30 +8,30 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Send_mangos;
 use App\Send_mangos_detail;
+use App\round;
+use App\round_send;
+use App\round_send_detail;
+use App\mangosteen;
+use Mango;
 use DB;
 use LengthException;
-use Mangosteen;
+
 
 class FarmerController extends Controller
 {
-    public function index() {
+  public function index() {
 
-      if( Auth::user()->type == 'admin'){
-
-        $farmer = User::where('type','farmer')->get();
-
+    if( Auth::user()->type == 'admin'){
+      $farmer = User::where('type','farmer')->get();
+    }
+    else{
+      $farmer = User::where('type','farmer')->where('id', Auth::user()->id)->get();
+    }
+      //   $count = User::count(); //นบัจํานวนแถวทงัหมด
+        return view('farmers.index', [
+          'farmers' => $farmer
+          ]); // สง่ไปที views โฟลเดอร์ typebooks ไฟล์ index.blade.php
       }
-      else{
-
-        $farmer = User::where('type','farmer')->where('id', Auth::user()->id)->get();
-
-      }
-
-        //   $count = User::count(); //นบัจํานวนแถวทงัหมด
-          return view('farmers.index', [
-            'farmers' => $farmer
-            ]); // สง่ไปที views โฟลเดอร์ typebooks ไฟล์ index.blade.php
-        }
 
 
 
@@ -41,22 +41,23 @@ class FarmerController extends Controller
         public function sendmangosteen() {
 
           $farmer = User::where('type','farmer')->get();
-
-          return view('farmers.sendmangosteen' , [
-            'farmers' => $farmer
-            ]);
-
+          $Round = Round::all();
+          $round_send = round_send::all();
+          $send_id = DB::table('round_send')->where([['send_id','LIKE',date("Ymd")."%"]])->orderByDesc("send_id")->select('round_send.send_id')->get();
+          //  return $send_id;
+         
+          return view ('farmers.sendmangosteen' ,[
+            'farmers' => $farmer,
+            'Round' => $Round,
+            'send_id'=> $send_id,
+            'round_send' => $round_send,
+            ] ) ;
+           
         }
 
-        public function register() {
+        
 
-            $farmer = User::where('type','admin')->get();
 
-            return view('farmers.register' , [
-              'farmers' => $farmer
-              ]);
-
-          }
 
         public function senddetailmangosteen() {
 
@@ -68,8 +69,9 @@ class FarmerController extends Controller
             'farmers' => $farmer,
             'size' => $size
             ]);
-
+ 
         }
+        
 
         public function showfarmer() {
 
@@ -83,15 +85,13 @@ class FarmerController extends Controller
 
              ->join('send_mangos_detail' , 'send_mangos.id', '=', 'send_mangos_detail.send_mangos_id')
 
-             ->join('mangosteen', 'mangosteen.id', '=', 'send_mangos_detail.mang_id')
+             ->join('mangosteen', 'mangosteen.mango_no', '=', 'send_mangos_detail.mang_id')
 
-
-
-             ->select('users.name' , 'users.lastname' ,'send_mangos_detail.send_amount' ,  'mangosteen.mang_size' )
+             ->select('users.name' , 'users.lastname' ,'send_mangos_detail.send_amount' ,  'mangosteen.name' )
              ->where('users.id',Auth::user()->id )
             // ->orderByDesc('works.begin_date')
             ->get();
-            //   return $date;
+               
 
 
           return view('farmers.showfarmer', [
@@ -106,58 +106,96 @@ class FarmerController extends Controller
 
 
         public function addstoresend(Request $request)
-            {
-              $send = new Send_mangos();
-              $send->users_id  = $request->get('user_id');
-              $send->send_date = $request->send_date;
-              $send->send_around = $request->send_around;
-              $send->save();
+        {
 
-              return redirect()->route('senddetailmangosteen');
-            }
-
-
-            public function addstoresenddetail(Request $request)
-            {
-              // return $request;
-              $farmer = Send_mangos::get();
-              foreach($farmer as $item){
-
-              $data = $item->id;
-
-              }
-
-                foreach( $request->mango_id as $detail){
-                    // return $detail;
-
-                  $arrlength=count($request["mango_id"]);
-
-                  //echo $arrlength;
-                    for($i=0;$i<$arrlength;$i++)
-                    {
-                        $sum=$request["mango_id"][$i];
-                        $num=$request["send_amount"][$sum-1];
-                        $send = new Send_mangos_detail();
-                        $send->send_mangos_id = $data;
-                        $send->mang_id = $sum;
-                        $send->send_amount = $num;
-                        $send->save();
-
-                    }
+          // return $request;
+          $round = new round_send();
+          $round->id  = $request->get('user_id');
+          $round->round_id = $request->send_around;
+          $round->send_date = $request->send_date;
+          $round->send_time = $request->time;
+          $round->total_wg = $request->weight;
+          $round->send_id = $request->code;
+          $round->loss_wg = 0;
+          $round->send_status = "กำลังคัดแยก";
+          // return $round->send_status."||". $round->loss_wg;
+          $round->save();
+          
+          // return redirect()->route('senderdetail.index');
+          return redirect()->route('senddetailmangosteen');
+        }
 
 
+        public function addstoresenddetail(Request $request)
+        { 
+          //  return $request;
+          $data =0;
 
+          $id = DB::table('mangosteen')->select('mangosteen.mango_no')->get();
+
+          $id1 = DB::table('Send_mangos')->select('Send_mangos.id')->get();
+
+          $amount = DB::table('mangosteen')->select('mangosteen.amount')->get();
+
+
+          // $id = DB::table('mangosteen')->select('mangosteen.name')->get();
+      
+          $farmer = Send_mangos::get();
+          foreach($farmer as $item){
+            $data = $item->id;
+          }
+          $i=0;
+            //  return $item;
+            $farmer = mangosteen::get();
+            // return $farmer;
+            foreach($farmer as $item ){
+
+              // return $item;
+              $data1 = $item->mango_no;
+              $data2 = $item->amount;
+              
+                    //  return $detail;
+                // $arrlength=count($request["mango_id"]);
+       
+                  //  return $arrlength;
+                 
+                  // $sum=$request["mango_id"][$i]; //return $sum;
+                  // $int=numberformat($sum);
+                  $num=$request["send_amount"][$i]; //return $num;
+
+                  // return $num;
+
+                  if($num!="" ){
+
+                    $sum = $data2+$num;
+
+                   
+                    $send = new send_mangos_detail(); //return $send;
+                    
+                    $send->send_mangos_id = $data; //return $send;
+                    $send->mang_id = $data1; //return $send;
+                    $send->send_amount = $num; //
+                    //  return $send;
+                    
+                    $send->save();  
+
+                    // $mang = Mangosteen::find($data1);
+                    //   // $mang->name = $request->get('name');
+                      
+
+                    //   $mang->amount = $sum;
+                      
+                    // $mang->save(); 
+                  }
+                  
 
                   // $send->mang_id = $detail;
-
-
-                  return redirect()->route('sendmangosteen');
-
-                }
-
-
-              return redirect()->route('sendmangosteen');
-            }
+                  $i+=1;
+                   
+               
+             
+        }return redirect()->route('sendmangosteen');
+      }
 
 
 
@@ -168,35 +206,28 @@ class FarmerController extends Controller
              return back();
             }
 
-
-            public function edit($id)
+        public function edit($id)
             {
+            
               $farmer = User::find($id);
-
-              return view('farmers.edit', compact('farmer'));
+              
+               return view('farmers.edit', compact('farmer'));
             }
 
          public function update(Request $request, $id)
           {
+            
             $request->validate([
               'name'=>'required',
-
+              'lastname'=>'required',
               'address'=> 'required',
               'tel' => 'required',
               'account' => 'required',
               'bank' => 'required',
 
             ]);
-
-            $farmer = User::find($id);
-            $farmer->name = $request->get('name');
-            $farmer->lastname = $request->get('lastname');
-            $farmer->address = $request->get('address');
-            $farmer->tel = $request->get('tel');
-            $farmer->account = $request->get('account');
-            $farmer->bank = $request->get('bank');
-
-            $farmer->save();
+            
+            User::find($id)->update($request->all());
 
             return redirect('/farmers')->with('success', 'famer has been updated');
         }

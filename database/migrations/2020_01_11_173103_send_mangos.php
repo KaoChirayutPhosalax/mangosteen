@@ -56,7 +56,7 @@ class SendMangos extends Migration
         Schema::table('send_mangos', function($table)
         {
             Schema::drop('send_mangos');
-            $table->dropForeign('send_mangos_users_foreign');
+            $table->dropForeign('send_mangos_users_id_foreign');
             // $table->dropForeign('send_mangos_mang_id_foreign');
         });
 

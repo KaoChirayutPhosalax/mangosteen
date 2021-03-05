@@ -25,8 +25,8 @@
         </ul>
       </div><br />
     @endif
-      <form method="post" action="{{ route('bidders.update', $bidder->id) }}">
-        @method('PATCH')
+      <form method="post" action="{{ url('bidder/edit/update/'.$bidder->id) }}">
+       
         @csrf
 
         <div class="form-group">

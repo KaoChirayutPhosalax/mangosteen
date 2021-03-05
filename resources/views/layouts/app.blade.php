@@ -50,10 +50,7 @@
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('เข้าสู่ระบบ') }}</a>
                             </li>
                             
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('ลงทะเบียน') }}</a>
-                                </li>
-                    
+                               
                         @else
                              <li class="nav-item">
                                 <a class="nav-link" href="{{ url('/test') }}">{{ __('รายละเอียด') }}</a>

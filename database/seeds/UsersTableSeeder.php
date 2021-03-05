@@ -25,5 +25,33 @@ class UsersTableSeeder extends Seeder
             'remember_token' => str_random(10),
             'type' => 'admin',
         ]);
+
+        $user->insert([
+            'name' => 'เกษตรกร',
+            'lastname' => 'เกษตรกร',
+            'address' => '123/12',
+            'tel' => '0801237895',
+            'account' => '1212312121',
+            'bank' => 'ธกส.',
+            'username' => 'farmer',
+            // 'email' => 'admin@gmail.com',
+            'password' => Hash::make('1234'),
+            'remember_token' => str_random(10),
+            'type' => 'farmer',
+        ]);
+
+        $user->insert([
+            'name' => 'ผู้ประมูล',
+            'lastname' => 'ผู้ประมูล',
+            'address' => '7878/98',
+            'tel' => '0999999999',
+            'account' => '787898',
+            'bank' => 'กสิกร',
+            'username' => 'bidder',
+            // 'email' => 'admin@gmail.com',
+            'password' => Hash::make('1234'),
+            'remember_token' => str_random(10),
+            'type' => 'bidder',
+        ]);
     }
 }

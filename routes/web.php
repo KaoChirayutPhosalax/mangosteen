@@ -6,12 +6,32 @@ Route::get('/farmers/senddetailmangosteen', 'FarmerController@senddetailmangoste
 
 Route::get('/farmers/showfarmer', 'FarmerController@showfarmer')->name('showfarmer');
 
+Route::get('/bidders/bill', 'BidderController@bill')->name('bill');
+
+Route::get('/bidders/receipt', 'BidderController@receipt')->name('receipt');
+
+Route::get('/admins/conqueror', 'AdminController@conqueror')->name('conqueror');
+
+// Route::get('/admins/addconqueror', 'AdminController@addconqueror')->name('addconqueror');
+
+
 Route::post('/farmers/addstoresend', [
     'as' => 'addstoresend',
     'uses' => 'FarmerController@addstoresend'
 ]);
 Route::resource('addstoresend', 'FarmerController' , ['except' => 'addstoresend']);
 
+Route::post('/admins/conquerordetail', [
+    'as' => 'conquerordetail',
+    'uses' => 'AdminController@conquerordetail'
+]);
+Route::resource('conquerordetail', 'AdminController' , ['except' => 'conquerordetail']);
+
+Route::post('/admins/addconqueror', [
+    'as' => 'addconqueror',
+    'uses' => 'AdminController@addconqueror'
+]);
+Route::resource('addconqueror', 'AdminController' , ['except' => 'addconqueror']);
 
 Route::post('/farmers/addstoresenddetail', [
     'as' => 'addstoresenddetail',
@@ -19,6 +39,10 @@ Route::post('/farmers/addstoresenddetail', [
 ]);
 Route::resource('addstoresenddetail', 'FarmerController' , ['except' => 'addstoresenddetail']);
 
+
+Route::get('/farmers/edit/{id}','FarmerController@edit');
+Route::post('/farmers/edit/update/{id}','FarmerController@update');
+Route::post('bidder/edit/update/{id}','BidderController@update');
 
 
 Route::post('/farmers/register', [
@@ -32,6 +56,26 @@ Route::post('/bidders/auction', [
     'uses' => 'BidderController@auction'
 ]);
 Route::resource('auction', 'BidderController' , ['except' => 'auction']);
+
+Route::post('/bidders/addstordealer', [
+    'as' => 'addstordealer',
+    'uses' => 'BidderController@addstordealer'
+]);
+Route::resource('addstordealer', 'BidderController' , ['except' => 'addstordealer']);
+
+Route::post('/bidders/addstordealer', [
+    'as' => 'addstordealer',
+    'uses' => 'BidderController@addstordealer'
+]);
+Route::resource('addstordealer', 'BidderController' , ['except' => 'addstordealer']);
+
+Route::post('/admins/conqueror', [
+    'as' => 'conqueror',
+    'uses' => 'AdmainController@conqueror'
+]);
+Route::resource('conqueror', 'AdminController' , ['except' => 'conqueconquerorr']);
+
+
 
 // Route::post('/bidders/mangosteenprice', [
 //     'as' => 'mangosteenprice',
@@ -53,11 +97,17 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/farmers/destroy/{id}','FarmerController@destroy');
 
-Route::resource('/farmers','FarmerController')->name('index','farmers');
+Route::resource('/farmers','FarmerController')/*->name('index','farmers')*/;
+
+Route::resource('/farmers','ProductFramController');
+
+// Route::get('farmers','ProductFramController@create');
 
 Route::get('farmers', 'FarmerController@index');
 
 Route::get('bidders','BidderController@index');
+
+Route::get('admins','AdminController@index');
 
 Route::get('/bidders/destroy/{id}','BidderController@destroy');
 

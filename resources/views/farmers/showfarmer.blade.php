@@ -1,66 +1,51 @@
-
-@extends('layouts.cus')
+@extends('layouts.cus') 
 
 @section('css')
 @endsection
-@section('content')
+@section('content') 
 
 
-    <div class="container">
+    <div class="container">    
+        <h3> ข้อมูลเกษตรกร </h3> 
+             <div class="panel-body"> 
 
+                <table class="table table-hover">
+                <thead>
+                   
+                    <tr>
+                        <th>ลำดับ</th>
+                        <th>ไซร์</th>
+                        <th>จำนวน (กิโลกรัม)</th>
+                    </tr>
+                </thead>
+                @foreach ($date as $dates) 
+                <tbody>
+                    <tr>
+                 
+                        {{-- <th scope="row">1</th> --}}
+                        <td>{{ Auth::user()->name }}</td>
+           
+                        <td>{{ $dates->send_mangos_detail }}</td> 
+                 
 
-
-                    <div class="panel-heading">ตรวจสอบมังคุด</div>
-
-                <div class="panel-body">
-
-                    <table class="table table-striped">
-                         <tr>
-
-                            <th>ชื่อเกษตรกร</th>
-                            <th>นามสกุล</th>
-                            <th>ไซร์</th>
-                            <th>จำนวน (กิโลกรัม)</th>
-
-                          </tr>
-                        <tr>
-
-
-                            @foreach ($date as $index )
-
-                            <tr>
-
-                                      <td>{{ $index->name }}</td>
-                                      <td>{{ $index->lastname }}</td>
-                                      <td>{{ $index->mang_size}}</td>
-                                      <td>{{ $index->send_amount}}</td>
-
-
-
-
-
-                              </tr>
-                               @endforeach
-
-
-
-                               </table>
-
-
-                             </table>
+                        <td>
+                   
+                    
+                            <a href="{{ url('/farmers/edit/'.$farmer->id) }}">แก้ไข</a>
+                           
+                        </td>
+                    </tr>@endforeach 
+                    
+                </tbody>
+                </table>
+                            
+        </div>         
+    </div> 
 
 
 
 
-            </div>
-        </div>
+@endsection 
 
-
-    </div>
-</div>
-
-
- @endsection
-
- @section('js')
+@section('js')
 @endsection

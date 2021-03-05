@@ -52,7 +52,7 @@
               <i class="fas fa-fw fa-tachometer-alt"></i>
               <span>ข้อมูลมังคุด</span></a>
           </li>
-
+          
 
 
       @elseif( Auth::user()->type == "bidder" )
@@ -61,6 +61,19 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>ข้อมูลส่วนตัวผู้ประมูล</span></a>
         </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{{ Route('bill') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>ชำระเงิน</span></a>
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{{ Route('receipt') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>ใบเสร็จชำระเงิน</span></a>
+        </li>
+
       @else
         <li class="nav-item active">
         <a class="nav-link" href="{{ url('farmers') }}">
@@ -84,11 +97,24 @@
       <!-- Nav Item - Pages Collapse Menu -->
       @if( Auth::user()->type == "admin" )
 
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('register') }}">{{ __('ลงทะเบียน') }}</a>
+      </li>
+
       <li class="nav-item active">
-        <a class="nav-link" href="{{ Route('register') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>ลงทะเบียน</span></a>
-        </li>
+        <a class="nav-link" href="{{ route('conqueror') }}">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>เลือกผู้ชนะ</span></a>
+      </li>
+
+      <li class="nav-item active">
+        <a class="nav-link" href="{{ route('sendmangosteen') }}">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>การส่งมังคุด</span></a>
+      </li>
+    
+
+      
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">

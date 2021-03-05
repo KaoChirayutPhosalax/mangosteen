@@ -25,8 +25,8 @@
         </ul>
       </div><br />
     @endif
-      <form method="post" action="{{ route('farmers.update', $farmer->id) }}">
-        @method('PATCH')
+      <form method="post" action="{{ url('/farmers/edit/update/'.$farmer->id) }}">
+     
         @csrf
         <div class="form-group">
           <label for="name">ชื่อเกษตรกร:</label>
